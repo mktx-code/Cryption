@@ -1,0 +1,124 @@
+# README to accompany create.sh
+
+This is the file that accompanies create.sh to help noobs get through the fdisk section.Please just follow
+along and answer the questions as I have. The first step will be deleting old partitions.
+FOR THOSE THAT CHOOSE TO SKIP THE BADBLOCKS WIPE: I have no idea how many partitions your disk has,
+the max possible is four. If you ever see:
+
+    Command (m for help): d
+    No partition is defined yet!
+
+then you can stop trying to delete partitions and move on. 
+If you wipe the disk then you don't have to worry about deleting partitions as they already have been.
+Therefore I will not be showing the deletion of partitions in my example at the bottom.
+
+Here are the selections you should make:
+
+1a. IF YOU WIPED THE DISK DO NOTHING HERE.
+1b. If you did not wipe the disk with badblocks then you first have to type: d
+  A. This will ask you which partition to delete, start with "1".
+  B. Do this again for each partition you have.
+2. Type: n 
+--This creates a new partition.
+3. Type: p
+--This is for a primary partition
+4. Type: 1
+--First partition
+5. Type: enter
+--Leave default
+6. Type: +5M
+--5MB size
+7. Type: n 
+--This creates another new partition.
+8. Type: p
+--This is for a primary partition
+9. Type: 2
+--Second partition
+10. Type: enter
+--Leave default
+11. Type: enter
+--Use rest of disk by default
+12. Type: t
+--Define type
+13. Type: 1
+--First partition
+14. Type: 8e
+--Linux LVM
+15. Type: t
+--Define type
+16. Type: 2
+--Second partition
+17. Type: 8e
+--Linux LVM
+18. Type: p
+--Prints current setup. Match it to mine and make sure it's the same apart from the disk sizes.
+19. Type: w
+--Writes all changes to the disk.
+######################################################################################################################
+
+Here is an example of my output:
+
+Command (m for help): n
+Partition type:
+   p   primary (0 primary, 0 extended, 4 free)
+   e   extended
+Select (default p): p
+Partition number (1-4, default 1): 1
+First sector (2048-7634943, default 2048): 
+Using default value 2048
+Last sector, +sectors or +size{K,M,G} (2048-7634943, default 7634943): +5M
+
+Command (m for help): n
+Partition type:
+   p   primary (1 primary, 0 extended, 3 free)
+   e   extended
+Select (default p): p
+Partition number (1-4, default 2): 2
+First sector (12288-7634943, default 12288): 
+Using default value 12288
+Last sector, +sectors or +size{K,M,G} (12288-7634943, default 7634943): 
+Using default value 7634943
+
+Command (m for help): t
+Partition number (1-4): 1
+Hex code (type L to list codes): 8e
+Changed system type of partition 1 to 8e (Linux LVM)
+
+Command (m for help): t
+Partition number (1-4): 2
+Hex code (type L to list codes): 8e
+Changed system type of partition 2 to 8e (Linux LVM)
+
+Command (m for help): p
+
+Disk /dev/sdc: 3909 MB, 3909091328 bytes
+121 heads, 62 sectors/track, 1017 cylinders, total 7634944 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x00000000
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdc1            2048       12287        5120   8e  Linux LVM
+/dev/sdc2           12288     7634943     3811328   8e  Linux LVM
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+######################################################################################################################
+
+If you get this error:
+
+    WARNING: Re-reading the partition table failed with error 16: Device or resource busy.
+    The kernel still uses the old table. The new table will be used at
+    the next reboot or after you run partprobe(8) or kpartx(8)
+    Syncing disks.
+
+then you need to try as root:
+
+    partprobe /dev/yourdevice
+
+If that doesn't work restart your operating system and start over.
