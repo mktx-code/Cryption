@@ -1,54 +1,51 @@
 #!/bin/bash
-#
-# This is the creation tool of the Cryption package. Used to wipe, partition, format, create key files, and set
-# passwords for an external disk.
-#
 # Safety first
 set -e
 # Pretty
 RED="\033[0;31m"
-BLUE="\033[0;36m"
+BLUE="\033[0;34m"
 GRN="\033[0;32m"
+PURP="\033[1;35m"
+CYAN="\033[0;36m"
 END="\033[0m"
-# Haz rootz nao?
+# Has root?
 if [ $UID -ne 0 ]; then
     echo -e $RED"This program must be run as root."$END
     sleep 2
     exit 0
 fi
 # What's up
-echo -e "$BLUE""This is the creation piece "$RED"create.sh"$END" "$BLUE"of the"$END" "$RED"cryption"$END" "$BLUE"tool.""$END"
-sleep 3
+echo -e "$BLUE""This is the creation piece "$RED"create.sh"$END" "$BLUE"of the"$END" "$RED"Cryption"$END" "$BLUE"tool.""$END"
 echo -e "$BLUE""This piece will properly create a new usb for your secure storage.""$END"
-sleep 5
 echo -e "$BLUE""If you haven't, please put your usb/sdcard in now.""$END"
-echo -e "$GRN""Press enter when you have the device in.""$END"
+echo -e "$GRN""Press enter when you have the device in.""$END" 
   read
 echo -e "$BLUE""\nHere is a list of the devices currently plugged in.""$END"
 sleep 5
+echo -e "$PURP"
 fdisk -l | grep dev
+echo -e "$END"
 sleep 5
-echo -e "$BLUE""\n/dev/sda group most likely belongs to your harddrive.""$END"
-sleep 4
+echo -e "$RED""\n/dev/sda"$END" "$BLUE"group most likely belongs to your harddrive.""$END"
 echo -e "$BLUE""Unless you have no harddrive in the device.""$END"
-sleep 5
-echo -e "$BLUE""\n/dev/sdb is most likely your Tails device.""$END"
-sleep 5
-echo -e "$BLUE""\n/dev/sdc, /dev/sdd, and so on are other devices."$END
-sleep 5
-echo -e "$BLUE""\nThey're assigned a letter based on the order they were plugged in.""$END"
-sleep 5
+echo -e "$RED""\n/dev/sdb"$END" "$BLUE"is most likely your device, unless you're using an os like Tails.""$END"
+echo -e "$BLUE""In that case"$END" "$RED"/dev/sdb"$END" "$BLUE"is your Tails device (Hint: Tails only shows one partition).""$END"
+echo -e "$RED""\n/dev/sdc"$END""$BLUE","$END" "$RED"/dev/sdd"$END""$BLUE", and so on are other devices."$END
+echo -e "$BLUE""\nThey were each assigned a letter based on the order they were plugged in.""$END"
 echo -e "$BLUE""Sd cards will be something like:"$END" "$RED"/dev/mmcblk0p""$END"
-sleep 5
 # Pick yer poison
 echo -e "$GRN""Do you see your device here?"" (yes/no)$END"
+  echo -e "$CYAN"   
   read DEVICE_HERE
+  echo -e "$CYAN" 
     if [[ "$DEVICE_HERE" != "yes" ]]; then
         echo -e "$BLUE""Please insert the device now.""$END"
         echo -e "$GRN""Press enter when device is in.""$END"
           read
               echo -e "$BLUE""Here's the new list of devices. The one you just put in should be at the bottom.""$END"
+              echo -e "$PURP"
               fdisk -l | grep dev 
+              echo -e "$END"
     else
         sleep 1
     fi
@@ -56,13 +53,17 @@ echo -e "$BLUE""\nPlease select the device you wish to work on.\nDo not include 
 sleep 2
 echo -e "$BLUE""Example:"$END" "$RED"/dev/sdc""$END"
 sleep 2
-# Device function for idiots
+# Device function
 device ()
 {
 echo -e "$GRN""Device to work with:""$END"
+  echo -e "$CYAN"   
   read DEVICE_ROOT
-echo -e "$GRN""You chose device"$END" "$RED""$DEVICE_ROOT""$END". "$BLUE"Is this correct? (yes/no).""$END"
+  echo -e "$END" 
+echo -e "$GRN""You chose device"$END" "$RED""$DEVICE_ROOT""$END". "$GRN"Is this correct? (yes/no).""$END"
+  echo -e "$CYAN" 
   read CORRECT_DEVICE
+  echo -e "$END" 
       export CORRECT_DEVICE="$CORRECT_DEVICE"
       export DEVICE_ROOT="$DEVICE_ROOT"
 }
@@ -75,11 +76,14 @@ echo -e "$BLUE""Alright, you have chosen device"$END" "$RED""$DEVICE_ROOT""$END"
 sleep 3
 echo -e ""$BLUE"Here is the space/partitioning of"$END" "$RED""$DEVICE_ROOT":"$END
 sleep 5
+echo -e "$PURP"
 fdisk -l "$DEVICE_ROOT"
-sleep 9
-# Wipe that shit
+echo -e "$END"
+# Wipe
 echo -e "$GRN""\nWould you like to begin by wiping the drive? (yes/no)""$END"
+  echo -e "$CYAN" 
   read WIPE
+  echo -e "$END" 
     if [[ "$WIPE" = "yes" ]]; then
         echo -e "$BLUE""\nEach pass takes about 10 minutes per GB.""$END"
         sleep 2
@@ -87,19 +91,25 @@ blockpasses ()
 {
 echo -e "$BLUE""\nHow many passes would you like to make with random data?""$END"
 echo -e "$GRN""Enter the number of passes you would like to make. (1-10)""$GRN"
+  echo -e "$CYAN" 
   read OW_PASSES
+  echo -e "$END" 
   export OW_PASSES=$OW_PASSES 
 }
           bblockpasses
             if [[ "$OW_PASSES" > "0" && "$OW_PASSES" < "11" ]]; then
                 echo -e "$BLUE""You chose "$RED""$OW_PASSES"$END" "passes.""$END"
-                badblocks -c 1024 -wsvt random -p $OW_PASSES $DEVICE_ROOT                              
+                echo -e "$PURP"
+                badblocks -c 1024 -wsvt random -p $OW_PASSES $DEVICE_ROOT
+                echo -e "$END"
             else
                 echo -e "$RED""\nYou did not enter a valid number.\nPlease choose a number between 1 and 10.""$END"
                 blockpasses
                   if [[ "$OW_PASSES" > "0" && "$OW_PASSES" < "11" ]]; then
                       echo -e "$BLUE""You chose "$RED""$OW_PASSES"$END" "passes.""$END"
+                      echo -e "$PURP"
                       badblocks -c 1024 -wsvt random -p $OW_PASSES $DEVICE_ROOT
+                      echo -e "$END"
                   else 
                       echo -e "$RED""PLEASE KILL YOURSELF NOW FOR BEING UNABLE TO ENTER A NUMBER PROPERLY.""$END"
                       exit 0
@@ -109,7 +119,9 @@ echo -e "$GRN""Enter the number of passes you would like to make. (1-10)""$GRN"
 # Just do it
         echo -e "$RED""\nIT IS NOT SECURE TO CONTINUE WITHOUT WIPING AT LEAST ONCE.""$END"
         echo -e "$GRN""\nDo you still want to continue without wiping? (yes/no)""$END"
+          echo -e "$CYAN" 
           read INSECURE_CONTINUE
+          echo -e "$END" 
               if [[ "$INSECURE_CONTINUE" = yes ]]; then
                   sleep 1
               else
@@ -119,39 +131,50 @@ echo -e "$GRN""Enter the number of passes you would like to make. (1-10)""$GRN"
     fi
 sleep 1
 # Partitioning. I will hold your hand on this one. See: README.create
-echo -e "$BLUE""Now we need to partition the disk The most sane way is using fdisk,""$END"
+echo -e "$BLUE""Now we need to partition the disk. The most sane way is using fdisk,""$END"
 echo -e "$BLUE""however this will require you to do some things for yourself.""$END"
-sleep 4
-echo -e "$BLUE""\nThis part should be very easy, if you need a reference please open the"$END"\n"$RED"README.fdisk""$END"
-echo -e "$BLUE""You can have it along side your terminal to see how the questions shoul\n be answered.""$END"
-echo -e "$GRN""Press enter when you're ready to enter fdisk.""$GRN"
+sleep 7
+echo -e "$BLUE""\nThis part should be very easy, if you follow the reference. Please open the""$END"
+echo -e "$RED""README.fdisk""$END" "$BLUE""file. You can have it along side your terminal to see""$END" 
+echo -e "$BLUE""how to do this part correctly.""$END"
+echo -e "$GRN""Press enter when you're ready to enter fdisk.""$END"
   read
+echo -e "$PURP" 
 fdisk $DEVICE_ROOT
+echo -e "$END" 
 # Crypto time
 echo -e "$BLUE""\nNow it is time to start encrypting.""$END"
 sleep 4
-echo -e "$BLUE""You are choosing a password now that unlocks your first partition.""$END"
-sleep 6
-echo -e "$BLUE""This is "$RED"one"$END" of "$RED"two"$END" passwords that you will need to remember.""$END"
-sleep 6
+echo -e "$BLUE""You are going to choose a password now that unlocks your first partition.""$END"
+echo -e "$BLUE""This is "$RED"ONE"$END" "$BLUE"of"$END" "$RED"TWO"$END" "$BLUE"passwords that you will need to remember.""$END"
 echo -e "$RED""\nIF YOU FORGET YOUR PASSWORD THERE IS NO WAY BACK INTO YOUR DEVICE!""$END"
-sleep 4
-echo -e "$BLUE""This process may take a few minutes depending on your computer.\nPlease be patient and don't exit the script!""$END"
-sleep 7
+sleep 8
+echo -e "$BLUE""\nThis process may take a few minutes depending on your computer.\nPlease be patient and don't exit the script!""$END"
 echo -e "$BLUE""You'll have to answer 'YES' to cryptsetup""$END"
 echo -e "$GRN""Press enter when you're ready to move on.""$END"
   read
 # First cascade with 15000 iterations and a passphrase
+echo -e "$PURP"
 cryptsetup luksFormat -i 15000 -c aes-cbc-essiv:sha256 "$DEVICE_ROOT"1
-echo -e "$BLUE""\nYou'll need to enter the password one last time now.""$END"
+echo -e "$END"
+echo -e "$BLUE""\nYou'll need to enter the first password one last time now.\n""$END"
 sleep 3
 SDX="$(echo -e "$DEVICE_ROOT" | cut -b 6-)"
+echo -e "$PURP"
 cryptsetup luksOpen "$DEVICE_ROOT"1 "$SDX"1
+echo -e "$END"
 sleep 10
 # Make ext4 filesystem
 echo -e "$BLUE""\nMaking a file system on the first partition now.\n""$END"
 sleep 6
+echo -e "$PURP"
 mkfs.ext4 -t ext4 /dev/mapper/"$SDX"1
+echo -e "$END"
+IS_MOUNTED="$(ls /media/ | grep -ic "$SDX"1)"
+  if [[ $IS_MOUNTED != 0 ]]; then
+      rm -rf /media/"$SDX"1
+  else
+  fi
 mkdir /media/"$SDX"1
 mount /dev/mapper/"$SDX"1 /media/"$SDX"1
 echo -e "$BLUE""First partition is mounted.""$END"
@@ -168,69 +191,50 @@ KEY_FILE=0
       KEY_FILE=`expr "$KEY_FILE" + 1`
   done
 echo -e "$BLUE""\n11 key files have been created.""$END" 
-sleep 5
-echo -e "$BLUE""They are named key.0 - key.10.""$END"
-sleep 5
+echo -e "$BLUE""They are named "$RED"key.0"$END" "$BLUE"-"$END" "$RED"key.10"$END""$BLUE".""$END"
+sleep 8
 echo -e "$BLUE""They are located at"$END" "$RED"/media/"$SDX"1""$END" "$BLUE"."""$END"
-sleep 5
-echo -e "$BLUE""\nYou now need to choose which number key will be used\nto unlock the second partition which is where all of your data\nwill be stored.""$END"
-sleep 7
-echo -e "$RED""\nDO NOT FORGET WHICH KEY YOU CHOOSE""$END"
-sleep 5
-echo -e "$BLUE""Here is a list of the keys we just created.""$END"
-sleep 5
-echo -e "$BLUE""Don't worry we will remove 'lost+found' later.""$END"
-sleep 3
-echo -e "$GRN""\nPress enter to see the list.""$END"
+echo -e "$GRN""Press enter to move on.""$END"
   read
+echo -e "$BLUE""\nYou now need to choose which number key will be used\nto unlock the second partition which is where all of your data\nwill be stored.""$END"
+echo -e "$RED""\nDO NOT FORGET WHICH KEY YOU CHOOSE\n""$END"
+sleep 10
+echo -e "$BLUE""Here is a list of the keys we just created.""$END"
+echo -e "$BLUE""Don't worry we will remove 'lost+found' later.""$END"
+echo -e "$GRN""\nPress enter to see the key list.""$END"
+  read
+echo -e "$PURP"
 ls -al /media/"$SDX"1
+echo -e "$END"
 echo -e "$GRN""\nWhich number key file would you like to use? (0-10)""$END"
 # Pick your key to unlock /dev/...2
+  echo -e "$CYAN" 
   read USER_KEY_PREF
+  echo -e "$END" 
   USER_KEY_PREF_EXISTS="$(ls /media/"$SDX"1 | grep -ic "$USER_KEY_PREF")"
     if [[ "$USER_KEY_PREF_EXISTS" = "0" ]]; then
         echo "$RED""\nYOU DIDN'T ENTER AN EXISTING KEYFILE!""$END"
         echo "$GRN""\nWhich number key would you like to use? (0-10)""$END"
+          echo -e "$CYAN" 
           read PREF_EXISTS_ADD
+          echo -e "$END" 
               USER_KEY_PREF_EXISTS="$PREF_EXISTS_ADD"
     else
         echo -e "$BLUE""\nYou chose to use"$END" "$RED"key."$USER_KEY_PREF""$END"."
         sleep 4
     fi
-echo -e "$BLUE""\nNow you have to choose a password to encrypt your keyfile.""$END"
-sleep 5
-echo -e "$RED""\nTHIS IS THE SECOND OTHER PASSWORD YOU HAVE TO REMEMBER.""$END"
-sleep 5
-echo -e "$RED""DO NOT FORGET IT OR YOUR KEYFILE NUMBER!""$END"
-sleep 5
-# Need a passphrase to pass to gpg for symmetric encryption of key
-password ()
-{
-echo -e "\nPassword:"
-read -s GPG_PASS_ONE
-echo -e "\nOne more time:"
-read -s GPG_PASS_TWO
-export GPG_PASS_ONE=$GPG_PASS_ONE
-export GPG_PASS_TWO=$GPG_PASS_TWO
-}
-password
-  while [[ "$GPG_PASS_ONE" != "$GPG_PASS_TWO" ]]
-  do
-      echo -e "$RED""PASSWORDS DO NOT MATCH""$END"
-      password
-  done
 mv /media/"$SDX"1/key."$USER_KEY_PREF" /tmp/
 KEY_TO_CRYPT=0
   if [[ "$(ls /media/"$SDX"1/ | grep -ic key."$USER_KEY_PREF")" != 0 ]]; then
       echo -e "$RED""SOMETHING WICKED HAPPENED!""$END"
       exit 0
-# Use pwgen to encrypt the keys not chosen in order to throw off bad actors
+# Use pwgen to encrypt the keys not chosen by user for obfuscation.
   else
     while [[ "$KEY_TO_CRYPT" -lt "10" ]]
     do
       while [[ "$KEY_TO_CRYPT" -lt "$USER_KEY_PREF" ]]
       do
-        gpg -q --passphrase "$(pwgen -s 10 1)" --symmetric /media/"$SDX"1/key."$KEY_TO_CRYPT"
+        gpg -q --passphrase "$(pwgen -s 18 1)" --symmetric /media/"$SDX"1/key."$KEY_TO_CRYPT"
         KEY_TO_CRYPT=`expr $KEY_TO_CRYPT + 1`
       done
       while [[ "$KEY_TO_CRYPT" = "$USER_KEY_PREF" ]]
@@ -240,22 +244,45 @@ KEY_TO_CRYPT=0
       done
       while [[ "$KEY_TO_CRYPT" -lt "11" && "$KEY_TO_CRYPT" -gt "$USER_KEY_PREF" ]]
       do
-        gpg -q --passphrase "$(pwgen -s 10 1)" --symmetric /media/"$SDX"1/key."$KEY_TO_CRYPT"
+        gpg -q --passphrase "$(pwgen -s 18 1)" --symmetric /media/"$SDX"1/key."$KEY_TO_CRYPT"
         KEY_TO_CRYPT=`expr "$KEY_TO_CRYPT" + 1`          
       done
     done
   fi
-# Finally encrypt users key with chosen passphrase
-gpg -q --passphrase "$GPG_PASS_ONE" --symmetric /tmp/
-# Lets clean up those variables
+echo -e "$BLUE""\nNow you have to choose a password to encrypt your keyfile.""$END"
+echo -e "$RED""\nTHIS IS THE SECOND PASSWORD YOU HAVE TO REMEMBER.""$END"
+echo -e "$RED""\nDO NOT FORGET IT OR YOUR KEYFILE NUMBER!""$END"
+echo -e "$GRN""\nPress enter to move on.""$END"
+  read
+# Need a passphrase for symmetric encryption of key
+password ()
+{
+echo -e "$GRN""\nPassword:""$END"
+read -s GPG_PASS_ONE
+echo -e "$GRN""\nOne more time:""$END"
+read -s GPG_PASS_TWO
+export GPG_PASS_ONE=$GPG_PASS_ONE
+export GPG_PASS_TWO=$GPG_PASS_TWO
+}
+password
+# Make sure passwords match
+  while [[ "$GPG_PASS_ONE" != "$GPG_PASS_TWO" ]]
+  do
+      echo -e "$RED""PASSWORDS DO NOT MATCH""$END"
+      password
+  done
+# Encrypt users key with chosen passphrase
+gpg -q --passphrase "$GPG_PASS_ONE" --symmetric /tmp/key."$USER_KEY_PREF"
+# Clean up those variables
 GPG_PASS_ONE="foo"
 GPG_PASS_TWO="foo"
-key."$USER_KEY_PREF"
 mv /media/"$SDX"1/*.gpg /tmp/
 echo -e "$BLUE""\nCleaning up unencrypted keys...""$END"
 sleep 5
 # Wipe unencrypted keys with 38 passes
+echo -e "$PURP"
 srm -drv /media/"$SDX"1/*
+echo -e "$END"
 mv /tmp/key.*.gpg /media/"$SDX"1
 touch /media/"$SDX"1/*
 echo -e "$BLUE""\nAll keys have been created, encrypted, and put onto"$END" "$RED"/dev/"$SDX"1""$END"
@@ -277,19 +304,26 @@ sleep 5
 echo -e "$BLUE""Please answer 'YES' to cryptsetup on last time.""$END"
 sleep 5
 # Second cascade with 15000 iterations and a key file
+echo -e "$PURP"
 cryptsetup luksFormat -i 15000 -c aes-xts-plain64 --key-file=/tmp/key."$USER_KEY_PREF" /dev/"$SDX"2
+echo -e "$END"
 # Open device to make the file system
 cryptsetup luksOpen --key-file=/tmp/key."$USER_KEY_PREF" /dev/"$SDX"2 "$SDX"2
-echo -e "$BLUE""\nPutting a file system on the second partition.""$END"
+sleep 10
+echo -e "$BLUE""\nPutting a file system on the second partition.\n""$END"
 sleep 5
 # File system
+echo -e "$PURP"
 mkfs.ext4 -t ext4 /dev/mapper/"$SDX"2
+echo -e "$END"
 echo -e "$BLUE""\nClosing"$END" "$RED"/dev/"$SDX"2"$END" "$BLUE"and cleaning up.""$END"
 sleep 5
 # Close device
 cryptsetup luksClose "$SDX"2
 # Secure-delete unencrypted key
+echo -e "$PURP"
 srm -drv /tmp/key*
+echo -e "$END"
 echo -e "$GRN""FINISHED. YOU CAN MOVE TO THE FILE"$END" "$RED"open.sh"$END" "$GRN"TO OPEN YOUR DEVICE.""$END"
 echo -e "$GRN""Press enter to exit the script.""$END"
   read
