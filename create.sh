@@ -50,9 +50,7 @@ echo -e "$GRN""Do you see your device here?"" (yes/no)$END"
         sleep 1
     fi
 echo -e "$BLUE""\nPlease select the device you wish to work on.\nDo not include the partition number if it exists.""$END"
-sleep 2
 echo -e "$BLUE""Example:"$END" "$RED"/dev/sdc""$END"
-sleep 2
 # Device function
 device ()
 {
@@ -166,15 +164,11 @@ echo -e "$END"
 sleep 10
 # Make ext4 filesystem
 echo -e "$BLUE""\nMaking a file system on the first partition now.\n""$END"
-sleep 6
+sleep 3
 echo -e "$PURP"
 mkfs.ext4 -t ext4 /dev/mapper/"$SDX"1
 echo -e "$END"
-IS_MOUNTED="$(ls /media/ | grep -ic "$SDX"1)"
-  if [[ $IS_MOUNTED != 0 ]]; then
-      rm -rf /media/"$SDX"1
-  else
-  fi
+rm -rf /media/"$SDX"1
 mkdir /media/"$SDX"1
 mount /dev/mapper/"$SDX"1 /media/"$SDX"1
 echo -e "$BLUE""First partition is mounted.""$END"
@@ -286,7 +280,9 @@ echo -e "$END"
 mv /tmp/key.*.gpg /media/"$SDX"1
 touch /media/"$SDX"1/*
 echo -e "$BLUE""\nAll keys have been created, encrypted, and put onto"$END" "$RED"/dev/"$SDX"1""$END"
-sleep 5
+echo -e "$GRN""Press enter to see the finalized list of keys.""$END"
+  read
+ls /media/"$SDX"1
 echo -e "$BLUE""\nUnmounting and closing"$END" "$RED"/dev/"$SDX"1""$END"
 sleep 5
 # Get rid of /dev/...1 properly, we don't need it since we have the key decrypted in /tmp/ still.
@@ -294,15 +290,12 @@ umount /media/"$SDX"1
 cryptsetup luksClose "$SDX"1
 rm -rf /media/"$SDX"1
 echo -e "$BLUE""\nCreating the storage partition on"$END" "$RED"/dev/"$SDX"2.""$END"
-sleep 5
 echo -e "$BLUE""Encrypted with key file "$RED"key."$USER_KEY_PREF"""$END"
-sleep 5
 echo -e "$BLUE""This should take a few minutes depending on your computer.""$END"
-sleep 5
 echo -e "$BLUE""Please be patient. Do not exit the script!""$END"
-sleep 5
 echo -e "$BLUE""Please answer 'YES' to cryptsetup on last time.""$END"
-sleep 5
+echo -e "$GRN""Press enter to enter cryptsetup.""$END"
+  read
 # Second cascade with 15000 iterations and a key file
 echo -e "$PURP"
 cryptsetup luksFormat -i 15000 -c aes-xts-plain64 --key-file=/tmp/key."$USER_KEY_PREF" /dev/"$SDX"2
@@ -311,7 +304,7 @@ echo -e "$END"
 cryptsetup luksOpen --key-file=/tmp/key."$USER_KEY_PREF" /dev/"$SDX"2 "$SDX"2
 sleep 10
 echo -e "$BLUE""\nPutting a file system on the second partition.\n""$END"
-sleep 5
+sleep 3
 # File system
 echo -e "$PURP"
 mkfs.ext4 -t ext4 /dev/mapper/"$SDX"2
