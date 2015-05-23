@@ -200,7 +200,7 @@ echo -e "$PURP"
 ls -al /media/"$SDX"1
 echo -e "$END"
 echo -e "$GRN""\nWhich number key file would you like to use? (0-10)""$END"
-# Pick your key to unlock /dev/...2
+# Pick your key to unlock /dev/...2, and make sure it exists.
   echo -e "$CYAN" 
   read USER_KEY_PREF
   echo -e "$END" 
