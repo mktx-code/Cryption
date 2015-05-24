@@ -61,3 +61,41 @@ echo -e "$BLUE""Alright, you have chosen device"$END" "$RED""$DEVICE_ROOT""$END"
 sleep 3
 # Check to make sure it has luks volumes
 echo -e "$BLUE""Checking for proper volumes on device...""$END"
+HAS_LUKS_ONE="$(cryptsetup luksDump "$SDX"1 | grep -c "ENABLED")"
+HAS_LUKS_TWO="$(cryptsetup luksDump "$SDX"2 | grep -c "ENABLED")"
+  if [[ "$HAS_LUKS_ONE" = "0" || "$HAS_LUKS_TWO" = "0" ]]; then
+      echo -e "$RED""THIS DEVICE IS NOT COMPATABLE! PLEASE REMOVE AND INSERT\nTHE CORRECT DISK OR EXIT THE SCRIPT WITH CTRL-c""$END"
+      echo -e "$GRN""Press enter to continue.""$END"
+      device
+  else
+      sleep 1
+  fi
+echo -e "$BLUE""Decrypting"$END" "$RED"/dev/"$SDX"1"$END""
+sleep 3
+echo -e "$PURP"
+cryptsetup luksOpen /dev/"$SDX"1 "$SDX"1
+echo -e "$END"
+rm -rf /media/"$SDX"1
+mkdir /media/"$SDX"1
+mount /dev/mapper/"$SDX"1 /media/"$SDX"1
+echo -e "$BLUE""First partition mounted. Now we need to decrypt your keyfile.""$END"
+echo -e "$GRN""Press enter to see a list of your keyfiles.""$END"
+  read
+echo -e "$BLUE""Which key do you want to decrypt? (0-10)""$END"
+# Pick your key to unlock /dev/...2, and make sure it exists.
+echo -e "$CYAN" 
+  read KEY_FILE
+echo -e "$END" 
+USER_KEY_PREF_EXISTS="$(ls /media/"$SDX"1 | grep -ic "$KEY_FILE")"
+  if [[ "$USER_KEY_PREF_EXISTS" = "0" ]]; then
+      echo "$RED""\nYOU DIDN'T ENTER AN EXISTING KEYFILE!""$END"
+      echo "$GRN""\nWhich number key would you like to use? (0-10)""$END"
+      echo -e "$CYAN" 
+      read PREF_EXISTS_ADD
+      echo -e "$END" 
+      USER_KEY_PREF_EXISTS="$PREF_EXISTS_ADD"
+  else
+      echo -e "$BLUE""\nYou chose to use"$END" "$RED"key."$KEY_FILE""$END"."
+      sleep 4
+  fi
+
