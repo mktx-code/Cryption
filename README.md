@@ -47,4 +47,5 @@
 
 #### ./lock.sh
 
-
+1. Pick device.
+2. Unmount and lock partition 2.
