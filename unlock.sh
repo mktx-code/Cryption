@@ -17,7 +17,7 @@ fi
 #Start fresh
 clear
 # What's up
-echo -e "$BLUE""This is the open piece "$RED"open.sh"$END" "$BLUE"of the"$END" "$RED"Cryption"$END" "$BLUE"tool.""$END"
+echo -e "$BLUE""This is the unlocking piece "$RED"unlock.sh"$END" "$BLUE"of the"$END" "$RED"Cryption"$END" "$BLUE"tool.""$END"
 echo -e "$BLUE""This piece will properly open a new usb/sd that was created with"$END" "$RED"open.sh""$END"
 echo -e "$BLUE""If you haven't, please put your usb/sdcard in now.""$END"
 echo -e "$GRN""Press enter when you have the device in.""$END"
@@ -132,7 +132,7 @@ umount /media/"$SDX"1
 cryptsetup luksClose "$SDX"1
 rm -rf /media/"$SDX"1
 echo -e "$GRN""\nTHE SCRIPT HAS FINISHED. YOUR DECRYPTED FILE SYSTEM IS LOCATED AT"$END" "$RED"/media/"$SDX"2""$END"
-echo -e "$GRN""TO CLOSE THE DEVICE RUN THE"$END" "$RED"close.sh"$END" "$GRN"SCRIPT""$END"
+echo -e "$GRN""TO CLOSE THE DEVICE RUN THE"$END" "$RED"lock.sh"$END" "$GRN"SCRIPT""$END"
 echo -e "$RED""\nDO NOT REMOVE THE DEVICE!!""$END"
 echo -e "$RED""REMOVING THE DEVICE WITHOUT EXITING PROPERLY CAN CORRUPT THE DATA!!""$END"
 echo -e "$GRN""\nPress enter to exit the script.""$END"
