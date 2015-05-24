@@ -14,6 +14,8 @@ if [ $UID -ne 0 ]; then
     sleep 2
     exit 0
 fi
+#Start fresh
+clear
 # What's up
 echo -e "$BLUE""This is the creation piece "$RED"create.sh"$END" "$BLUE"of the"$END" "$RED"Cryption"$END" "$BLUE"tool.""$END"
 echo -e "$BLUE""This piece will properly create a new usb for your secure storage.""$END"
