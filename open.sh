@@ -64,7 +64,7 @@ echo -e "$BLUE""Checking for proper volumes on device...""$END"
 HAS_LUKS_ONE="$(cryptsetup luksDump "$SDX"1 | grep -c "ENABLED")"
 HAS_LUKS_TWO="$(cryptsetup luksDump "$SDX"2 | grep -c "ENABLED")"
   if [[ "$HAS_LUKS_ONE" = "0" || "$HAS_LUKS_TWO" = "0" ]]; then
-      echo -e "$RED""THIS DEVICE IS NOT COMPATABLE! PLEASE REMOVE AND INSERT\nTHE CORRECT DISK OR EXIT THE SCRIPT WITH CTRL-c""$END"
+      echo -e "$RED""THIS DEVICE IS NOT COMPATABLE! PLEASE REMOVE AND INSERT\nTHE CORRECT DISK OR EXIT THE SCRIPT WITH 'Ctrl-c'""$END"
       echo -e "$GRN""Press enter to continue.""$END"
       device
   else
@@ -82,7 +82,7 @@ echo -e "$BLUE""First partition mounted. Now we need to decrypt your keyfile.""$
 echo -e "$GRN""Press enter to see a list of your keyfiles.""$END"
   read
 echo -e "$BLUE""Which key do you want to decrypt? (0-10)""$END"
-# Pick your key to unlock /dev/...2, and make sure it exists.
+# Pick your key to unlock /dev/...2, and make sure it exists
 echo -e "$CYAN" 
   read KEY_FILE
 echo -e "$END" 
@@ -98,4 +98,51 @@ USER_KEY_PREF_EXISTS="$(ls /media/"$SDX"1 | grep -ic "$KEY_FILE")"
       echo -e "$BLUE""\nYou chose to use"$END" "$RED"key."$KEY_FILE""$END"."
       sleep 4
   fi
+echo -e "$BLUE""\nNow we must decrypt the key in order to unlock the data on"$END" "$RED""$SDX"2""$END"
+echo -e "$BLUE""The next step will ask for the password for you keyfile.""$END"
+echo -e "$BLUE""In order to keep your decrypted key off the disk as much as possible""$END"
+echo -e "$BLUE""the script will move through a few steps after this with no explanation.""$END"
+echo -e "$GRN""\nPress enter to move on.""$END"
+  read
+# Need a passphrase for dcryption of key
+password ()
+{
+echo -e "$GRN""\nKey file password:""$END"
+read -s GPG_PASS_ONE
+echo -e "$GRN""\nOne more time:""$END"
+read -s GPG_PASS_TWO
+export GPG_PASS_ONE=$GPG_PASS_ONE
+export GPG_PASS_TWO=$GPG_PASS_TWO
+}
+password
+# Make sure passwords match
+  while [[ "$GPG_PASS_ONE" != "$GPG_PASS_TWO" ]]
+  do
+      echo -e "$RED""PASSWORDS DO NOT MATCH""$END"
+      password
+  done
+# Decrypt key and store it temporarily
+gpg -q --passphrase "$GPG_PASS_ONE" -d /media/"$SDX"1/key."$KEY_FILE" > /tmp/key
+# Clean up password variables
+GPG_PASS_ONE="foo"
+GPG_PASS_TWO="foo"
+# Open and mount partition 2
+cryptsetup --key-file=/tmp/key luksOpen /dev/"$SDX"2 "$SDX"2
+echo -e "$PURP"
+srm -drv /tmp/key
+echo -e "$END"
+rm -rf /media/"$SDX"2 
+mkdir /media/"$SDX"2
+mount /dev/mapper/"$SDX"2 /media/"$SDX"2
+# Clean up 
+umount /media/"$SDX"1
+cryptsetup luksClose "$SDX"1
+rm -rf /media/"$SDX"1
+echo -e "$GRN""\nTHE SCRIPT HAS FINISHED. YOUR DECRYPTED FILE SYSTEM IS LOCATED AT"$END" "$RED"/media/"$SDX"2""$END"
+echo -e "$RED""\nDO NOT REMOVE THE DEVICE!!\n""$END"
+echo -e "$GRN""TO CLOSE THE DEVICE RUN THE"$END" "$RED"close.sh"$END""$GRN"SCRIPT""$END"
+echo -e "$RED""\nREMOVING THE DEVICE WITHOUT EXITING PROPERLY CAN CORRUPT THE DATA!!""$END"
+echo -e "$GRN""\nPress enter to exit the script.""$END"
+  read
+exit 0
 
