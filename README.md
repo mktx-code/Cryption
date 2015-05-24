@@ -1,8 +1,9 @@
 # Cryption
-Tools for creating, opening/using, and closing a usb/sd encrypted with cryptsetup and gpg. 
+###Tools for creating, opening/using, and closing a usb/sd encrypted with cryptsetup and gpg. 
 
 
-## Get the code
+
+#### Get the code
 1. git clone https://github.com/mktx-code/Cryption
 2. cd Cryption
 3. chmod +x *.sh
@@ -18,7 +19,7 @@ Tools for creating, opening/using, and closing a usb/sd encrypted with cryptsetu
 
 
 
-### ./create.sh
+#### ./create.sh
 
 1. Pick an external storage device. 
 2. Wipe device using badblocks, number of passes specified by user. 
@@ -30,7 +31,7 @@ Tools for creating, opening/using, and closing a usb/sd encrypted with cryptsetu
 8. Second partition is encrypted using: cryptsetup luksFormat -i 15000 -c aes-xts-plain64 and a key file chosen by the user.
 9. Everything is cleaned up nice and neat.
 
-### ./unlock.sh
+#### ./unlock.sh
 
 1. Pick device.
 2. Unlock partition 1.
@@ -39,6 +40,6 @@ Tools for creating, opening/using, and closing a usb/sd encrypted with cryptsetu
 5. Securely remove decrypted keyfile.
 6. Unmount and lock partition 1.
 
-### ./lock.sh
+#### ./lock.sh
 
 
