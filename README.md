@@ -5,10 +5,15 @@
 
 #### Get the code
 1. git clone https://github.com/mktx-code/Cryption
+
 2. cd Cryption
+
 3. chmod +x *.sh
-4. MUST BE RUN AS ROOT!
+
+4. MUST BE RUN AS ROOT
+
 5. Run the relevant script.
+
 
   A. ./create.sh
   
