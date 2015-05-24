@@ -18,7 +18,7 @@ fi
 clear
 # What's up
 echo -e "$BLUE""This is the unlocking piece "$RED"unlock.sh"$END" "$BLUE"of the"$END" "$RED"Cryption"$END" "$BLUE"tool.""$END"
-echo -e "$BLUE""This piece will properly open a new usb/sd that was created with"$END" "$RED"open.sh""$END"
+echo -e "$BLUE""This piece will properly unlock and mount a usb/sd that was created with"$END" "$RED"open.sh""$END"
 echo -e "$BLUE""If you haven't, please put your usb/sdcard in now.""$END"
 echo -e "$GRN""Press enter when you have the device in.""$END"
   read
