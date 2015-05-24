@@ -133,7 +133,7 @@ echo -e "$BLUE""Now we need to partition the disk. The most sane way is using fd
 echo -e "$BLUE""however this will require you to do some things for yourself.""$END"
 sleep 7
 echo -e "$BLUE""\nThis part should be very easy, if you follow the reference. Please open the""$END"
-echo -e "$RED""README.fdisk""$END" "$BLUE""file. You can have it along side your terminal to see""$END" 
+echo -e "$RED""README.create""$END" "$BLUE""file. You can have it along side your terminal to see""$END" 
 echo -e "$BLUE""how to do this part correctly.""$END"
 echo -e "$GRN""Press enter when you're ready to enter fdisk.""$END"
   read
