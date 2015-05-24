@@ -317,7 +317,7 @@ cryptsetup luksClose "$SDX"2
 echo -e "$PURP"
 srm -drv /tmp/key*
 echo -e "$END"
-echo -e "$GRN""FINISHED. YOU CAN MOVE TO THE FILE"$END" "$RED"open.sh"$END" "$GRN"TO OPEN YOUR DEVICE.""$END"
+echo -e "$GRN""FINISHED. YOU CAN MOVE TO THE FILE"$END" "$RED"unlock.sh"$END" "$GRN"TO OPEN YOUR DEVICE.""$END"
 echo -e "$GRN""Press enter to exit the script.""$END"
   read
 exit 0
