@@ -96,7 +96,7 @@ echo -e "$GRN""Enter the number of passes you would like to make. (1-10)""$GRN"
   echo -e "$END" 
   export OW_PASSES=$OW_PASSES 
 }
-          bblockpasses
+          blockpasses
             if [[ "$OW_PASSES" > "0" && "$OW_PASSES" < "11" ]]; then
                 echo -e "$BLUE""You chose "$RED""$OW_PASSES"$END" "passes.""$END"
                 echo -e "$PURP"
