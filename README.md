@@ -8,9 +8,13 @@ Tools for creating, opening/using, and closing a usb/sd encrypted with cryptsetu
 3. chmod +x *.sh
 4. MUST BE RUN AS ROOT!
 5. Run the relevant script.
-  A. ./create.sh
+
+  A. ./creat.sh
+  
   B. ./unlock.sh
+  
   C. ./lock.sh
+
 
 
 
