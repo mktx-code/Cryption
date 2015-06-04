@@ -97,8 +97,8 @@ echo -e "$GRN""Enter the number of passes you would like to make. (1-10)""$GRN"
   export OW_PASSES=$OW_PASSES 
 }
           blockpasses
-            if [[ "$OW_PASSES" > "0" && "$OW_PASSES" < "11" ]]; then
-                echo -e "$BLUE""You chose "$RED""$OW_PASSES"$END" "passes.""$END"
+            if [[ "$OW_PASSES" -gt "0" && "$OW_PASSES" -lt "11" ]]; then
+                echo -e "$BLUE""You chose "$RED""$OW_PASSES"$END" "$BLUE""passes.""$END"
                 echo -e "$PURP"
                 badblocks -c 1024 -wsvt random -p $OW_PASSES $DEVICE_ROOT
                 echo -e "$END"
