@@ -105,7 +105,7 @@ echo -e "$GRN""Enter the number of passes you would like to make. (1-10)""$GRN"
             else
                 echo -e "$RED""\nYou did not enter a valid number.\nPlease choose a number between 1 and 10.""$END"
                 blockpasses
-                  if [[ "$OW_PASSES" > "0" && "$OW_PASSES" < "11" ]]; then
+                  if [[ "$OW_PASSES" -gt "0" && "$OW_PASSES" -lt "11" ]]; then
                       echo -e "$BLUE""You chose "$RED""$OW_PASSES"$END" "passes.""$END"
                       echo -e "$PURP"
                       badblocks -c 1024 -wsvt random -p $OW_PASSES $DEVICE_ROOT
@@ -229,7 +229,7 @@ KEY_TO_CRYPT=0
     do
       while [[ "$KEY_TO_CRYPT" -lt "$USER_KEY_PREF" ]]
       do
-        gpg -q --passphrase "$(pwgen -s 18 1)" --symmetric /media/"$SDX"1/key."$KEY_TO_CRYPT"
+        gpg -q --passphrase "$(pwgen -n -c -y -B -s 18 1)" --symmetric /media/"$SDX"1/key."$KEY_TO_CRYPT"
         KEY_TO_CRYPT=`expr $KEY_TO_CRYPT + 1`
       done
       while [[ "$KEY_TO_CRYPT" = "$USER_KEY_PREF" ]]
@@ -239,7 +239,7 @@ KEY_TO_CRYPT=0
       done
       while [[ "$KEY_TO_CRYPT" -lt "11" && "$KEY_TO_CRYPT" -gt "$USER_KEY_PREF" ]]
       do
-        gpg -q --passphrase "$(pwgen -s 18 1)" --symmetric /media/"$SDX"1/key."$KEY_TO_CRYPT"
+        gpg -q --passphrase "$(pwgen -n -c -y -B -s 18 1)" --symmetric /media/"$SDX"1/key."$KEY_TO_CRYPT"
         KEY_TO_CRYPT=`expr "$KEY_TO_CRYPT" + 1`          
       done
     done
