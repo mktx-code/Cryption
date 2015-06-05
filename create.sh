@@ -2,11 +2,11 @@
 # Safety first
 set -e
 # Pretty
-RED="\033[0;31m"
-BLUE="\033[0;34m"
-GRN="\033[0;32m"
+RED="\033[1;31m"
+BLUE="\033[1;34m"
+GRN="\033[1;32m"
 PURP="\033[1;35m"
-CYAN="\033[0;36m"
+CYAN="\033[1;36m"
 END="\033[0m"
 # Has root?
 if [ $UID -ne 0 ]; then
@@ -57,13 +57,13 @@ echo -e "$BLUE""Example:"$END" "$RED"/dev/sdc""$END"
 device ()
 {
 echo -e "$GRN""Device to work with:""$END"
-  echo -e "$CYAN"   
+  echo -e "$CYAN"
   read DEVICE_ROOT
-  echo -e "$END" 
+  echo -e "$END"
 echo -e "$GRN""You chose device"$END" "$RED""$DEVICE_ROOT""$END". "$GRN"Is this correct? (yes/no).""$END"
-  echo -e "$CYAN" 
+  echo -e "$CYAN"
   read CORRECT_DEVICE
-  echo -e "$END" 
+  echo -e "$END"
       export CORRECT_DEVICE="$CORRECT_DEVICE"
       export DEVICE_ROOT="$DEVICE_ROOT"
 }
@@ -81,9 +81,9 @@ fdisk -l "$DEVICE_ROOT"
 echo -e "$END"
 # Wipe
 echo -e "$GRN""\nWould you like to begin by wiping the drive? (yes/no)""$END"
-  echo -e "$CYAN" 
+  echo -e "$CYAN"
   read WIPE
-  echo -e "$END" 
+  echo -e "$END"
     if [[ "$WIPE" = "yes" ]]; then
         echo -e "$BLUE""\nEach pass takes about 10 minutes per GB.""$END"
         sleep 2
@@ -91,10 +91,10 @@ blockpasses ()
 {
 echo -e "$BLUE""\nHow many passes would you like to make with random data?""$END"
 echo -e "$GRN""Enter the number of passes you would like to make. (1-10)""$GRN"
-  echo -e "$CYAN" 
+  echo -e "$CYAN"
   read OW_PASSES
-  echo -e "$END" 
-  export OW_PASSES=$OW_PASSES 
+  echo -e "$END"
+  export OW_PASSES=$OW_PASSES
 }
           blockpasses
             if [[ "$OW_PASSES" -gt "0" && "$OW_PASSES" -lt "11" ]]; then
@@ -110,7 +110,7 @@ echo -e "$GRN""Enter the number of passes you would like to make. (1-10)""$GRN"
                       echo -e "$PURP"
                       badblocks -c 1024 -wsvt random -p $OW_PASSES $DEVICE_ROOT
                       echo -e "$END"
-                  else 
+                  else
                       echo -e "$RED""PLEASE KILL YOURSELF NOW FOR BEING UNABLE TO ENTER A NUMBER PROPERLY.""$END"
                       exit 0
                   fi
@@ -121,7 +121,7 @@ echo -e "$GRN""Enter the number of passes you would like to make. (1-10)""$GRN"
         echo -e "$GRN""\nDo you still want to continue without wiping? (yes/no)""$END"
           echo -e "$CYAN" 
           read INSECURE_CONTINUE
-          echo -e "$END" 
+          echo -e "$END"
               if [[ "$INSECURE_CONTINUE" = yes ]]; then
                   sleep 1
               else
@@ -133,7 +133,6 @@ sleep 1
 # Partitioning. I will hold your hand on this one. See: README.create
 echo -e "$BLUE""Now we need to partition the disk. The most sane way is using fdisk,""$END"
 echo -e "$BLUE""however this will require you to do some things for yourself.""$END"
-sleep 7
 echo -e "$BLUE""\nThis part should be very easy, if you follow the reference. Please open the""$END"
 echo -e "$RED""README.create""$END" "$BLUE""file. You can have it along side your terminal to see""$END" 
 echo -e "$BLUE""how to do this part correctly.""$END"
@@ -144,15 +143,22 @@ fdisk $DEVICE_ROOT
 echo -e "$END" 
 # Crypto time
 echo -e "$BLUE""\nNow it is time to start encrypting.""$END"
-sleep 4
 echo -e "$BLUE""You are going to choose a password now that unlocks your first partition.""$END"
 echo -e "$BLUE""This is "$RED"ONE"$END" "$BLUE"of"$END" "$RED"TWO"$END" "$BLUE"passwords that you will need to remember.""$END"
 echo -e "$RED""\nIF YOU FORGET YOUR PASSWORD THERE IS NO WAY BACK INTO YOUR DEVICE!""$END"
-sleep 8
 echo -e "$BLUE""\nThis process may take a few minutes depending on your computer.\nPlease be patient and don't exit the script!""$END"
 echo -e "$BLUE""You'll have to answer 'YES' to cryptsetup""$END"
 echo -e "$GRN""Press enter when you're ready to move on.""$END"
   read
+# Checksdcard function to correct the coming commands if sd card is present.
+checksdcard ()
+{
+IS_SD="$(echo "$DEVICE_ROOT" | grep -c "mm")"
+  if [ "$IS_SD" -gt "0" ]; then
+      export DEVICE_ROOT=""$DEVICE_ROOT"p"
+  fi
+}
+checksdcard
 # First cascade with 15000 iterations and a passphrase
 echo -e "$PURP"
 cryptsetup luksFormat -i 15000 -c aes-cbc-essiv:sha256 "$DEVICE_ROOT"1
@@ -240,7 +246,7 @@ KEY_TO_CRYPT=0
       while [[ "$KEY_TO_CRYPT" -lt "11" && "$KEY_TO_CRYPT" -gt "$USER_KEY_PREF" ]]
       do
         gpg -q --passphrase "$(pwgen -n -c -y -B -s 18 1)" --symmetric /media/"$SDX"1/key."$KEY_TO_CRYPT"
-        KEY_TO_CRYPT=`expr "$KEY_TO_CRYPT" + 1`          
+        KEY_TO_CRYPT=`expr "$KEY_TO_CRYPT" + 1`
       done
     done
   fi
