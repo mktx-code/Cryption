@@ -235,7 +235,7 @@ KEY_TO_CRYPT=0
     do
       while [[ "$KEY_TO_CRYPT" -lt "$USER_KEY_PREF" ]]
       do
-        gpg -q --passphrase "$(pwgen -n -c -y -B -s 18 1)" --symmetric /media/"$SDX"1/key."$KEY_TO_CRYPT"
+        gpg -q --passphrase "$(pwgen -n -c -y -B -s 18 1)" --symmetric --cipher-algo aes256 /media/"$SDX"1/key."$KEY_TO_CRYPT"
         KEY_TO_CRYPT=`expr $KEY_TO_CRYPT + 1`
       done
       while [[ "$KEY_TO_CRYPT" = "$USER_KEY_PREF" ]]
@@ -245,8 +245,13 @@ KEY_TO_CRYPT=0
       done
       while [[ "$KEY_TO_CRYPT" -lt "11" && "$KEY_TO_CRYPT" -gt "$USER_KEY_PREF" ]]
       do
+<<<<<<< HEAD
         gpg -q --passphrase "$(pwgen -n -c -y -B -s 18 1)" --symmetric /media/"$SDX"1/key."$KEY_TO_CRYPT"
         KEY_TO_CRYPT=`expr "$KEY_TO_CRYPT" + 1`
+=======
+        gpg -q --passphrase "$(pwgen -n -c -y -B -s 18 1)" --symmetric --cipher-algo aes256 /media/"$SDX"1/key."$KEY_TO_CRYPT"
+        KEY_TO_CRYPT=`expr "$KEY_TO_CRYPT" + 1`          
+>>>>>>> c10df435cb1fad2d0f3bfdaf9bd21c928084d1aa
       done
     done
   fi
@@ -273,7 +278,7 @@ password
       password
   done
 # Encrypt users key with chosen passphrase
-gpg -q --passphrase "$GPG_PASS_ONE" --symmetric /tmp/key."$USER_KEY_PREF"
+gpg -q --passphrase "$GPG_PASS_ONE" --symmetric --cipher-algo aes256 /tmp/key."$USER_KEY_PREF"
 # Clean up those variables
 GPG_PASS_ONE="foo"
 GPG_PASS_TWO="foo"
